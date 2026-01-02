@@ -1,0 +1,39 @@
+services:
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    restart: always
+    environment:
+      - MYSQL_HOST=mariadb
+      - MYSQL_DATABASE=${MARIADB_DATABASE}
+      - MYSQL_USER=${MARIADB_USER}
+      - MYSQL_PASSWORD=${MARIADB_PASSWORD}
+    networks:
+      - nextcloud
+      - local
+    volumes:
+      - nextcloud:/var/www/html
+    depends_on:
+      - mariadb
+  mariadb:
+    image: mariadb:latest
+    container_name: nextcloud-mariadb
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${MARIADB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MYSQL_USER=${MARIADB_USER}
+      - MYSQL_PASSWORD=${MARIADB_PASSWORD}
+    networks:
+      - local
+    volumes:
+      - mariadb:/var/lib/mysql
+
+networks:
+  nextcloud:
+    external: true
+  local:
+
+volumes:
+  nextcloud:
+  mariadb:
