@@ -2,19 +2,22 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    restart: always
-    networks:
-      - nextcloud
-      - forgejo
+    restart: unless-stopped
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./letsencrypt:/etc/letsencrypt
     ports:
       - 80:80
       - 443:443
+    networks:
+      - home-assistant_external
+      - nextcloud_external
+      - forgejo_external
 
 networks:
-  nextcloud:
+  home-assistant_external:
     external: true
-  forgejo:
+  nextcloud_external:
+    external: true
+  forgejo_external:
     external: true

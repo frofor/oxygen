@@ -2,7 +2,7 @@ services:
   forgejo:
     image: codeberg.org/forgejo/forgejo:13
     container_name: forgejo
-    restart: always
+    restart: unless-stopped
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -11,32 +11,31 @@ services:
       - FORGEJO__database__NAME=${MARIADB_DATABASE}
       - FORGEJO__database__USER=${MARIADB_USER}
       - FORGEJO__database__PASSWD=${MARIADB_PASSWORD}
-    networks:
-      - forgejo
-      - local
     volumes:
       - forgejo:/data
+    networks:
+      - external
+      - internal
     depends_on:
       - mariadb
   mariadb:
     image: mariadb:latest
     container_name: forgejo-mariadb
-    restart: always
+    restart: unless-stopped
     environment:
       - MYSQL_DATABASE=${MARIADB_DATABASE}
       - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
       - MYSQL_USER=${MARIADB_USER}
       - MYSQL_PASSWORD=${MARIADB_PASSWORD}
-    networks:
-      - local
     volumes:
       - mariadb:/var/lib/mysql
-
-networks:
-  forgejo:
-    external: true
-  local:
+    networks:
+      - internal
 
 volumes:
   forgejo:
   mariadb:
+
+networks:
+  external:
+  internal:

@@ -1,0 +1,18 @@
+services:
+  home-assistant:
+    image: homeassistant/home-assistant:latest
+    container_name: home-assistant
+    restart: unless-stopped
+    volumes:
+      - home-assistant:/config
+      - ./configuration.yaml:/config/configuration.yaml
+    ports:
+      - 8123:8123
+    networks:
+      - external
+
+volumes:
+  home-assistant:
+
+networks:
+  external:
